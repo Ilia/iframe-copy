@@ -1,6 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Iframe Copy",
+  "description" : "List and copy iframe elements",
   "version": "1.0",
   "permissions": [
     "clipboardWrite",
