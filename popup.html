@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Iframe Copy</title>
+  <script src="popup.js"></script>
+  <script src="export.js"></script>
+  <style>
+    body {
+      min-width: 400px;
+      min-height: 150px;
+      overflow-x: auto;
+      font-family: Arial, sans-serif;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 8px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    button {
+      padding: 4px 8px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Iframe Copy</h1>
+  <button id="exportButton" style="float: right;">Exportar a CSV</button>
+  <table id="iframeTable">
+    <thead>
+      <tr>
+        <th>URL del iframe</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody id="iframeList"></tbody>
+  </table>
+</body>
+</html>
