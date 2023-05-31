@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const actionsCell = document.createElement('td');
         const copyButton = document.createElement('button');
-        copyButton.innerText = 'Copiar';
+        copyButton.innerText = 'Copy';
         copyButton.addEventListener('click', () => {
           copyToClipboard(attributes.src);
         });
@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
         row.appendChild(actionsCell);
 
         const removeButton = document.createElement('button');
-        removeButton.innerText = 'Eliminar';
+        removeButton.innerText = 'Delete';
         removeButton.addEventListener('click', () => {
           removeIframe(attributes.src);
         });
@@ -50,6 +50,18 @@ document.addEventListener('DOMContentLoaded', () => {
       }, (results) => {
         const csvData = results[0].result;
         downloadCSV(csvData);
+      });
+    });
+  });
+  //for delete all
+  document.getElementById('deleteAllButton').addEventListener('click', () => {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      const tab = tabs[0];
+      chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        function: removeAllIframeInTab,
+      }, (results) => {
+        
       });
     });
   });
@@ -101,6 +113,16 @@ function copyToClipboard(text) {
     console.log('Texto copiado al portapapeles: ' + text);
   }).catch((error) => {
     console.error('Error al copiar el texto al portapapeles:', error);
+  });
+}
+
+function removeAllIframeInTab() {
+  const iframes = Array.from(document.querySelectorAll('iframe'));
+
+  iframes.forEach((iframeToRemove)=>{
+    if (iframeToRemove) {
+      iframeToRemove.remove();
+    }
   });
 }
 
