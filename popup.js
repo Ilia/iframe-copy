@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     const tab = tabs[0];
+  
     chrome.scripting.executeScript({
       target: { tabId: tab.id },
       function: analyzeIframes,
@@ -9,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const iframeListElement = document.getElementById('iframeList');
 
       iframeAttributes.forEach((attributes) => {
+        
         if(!attributes.src){return;}
         const row = document.createElement('tr');
 
@@ -23,6 +25,15 @@ document.addEventListener('DOMContentLoaded', () => {
           copyToClipboard(attributes.src);
         });
         actionsCell.appendChild(copyButton);
+        row.appendChild(actionsCell);
+
+        const removeButton = document.createElement('button');
+        removeButton.innerText = 'Eliminar';
+        removeButton.addEventListener('click', () => {
+          removeIframe(attributes.src);
+        });
+        actionsCell.appendChild(removeButton);
+
         row.appendChild(actionsCell);
 
         iframeListElement.appendChild(row);
@@ -62,6 +73,28 @@ function exportIframesToCSV() {
   return csvData;
 }
 
+function removeIframe(src) {
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    const tab = tabs[0];
+    chrome.scripting.executeScript({
+      target: { tabId: tab.id },
+      function: removeIframeInTab,
+      args: [src]
+    });
+  });
+}
+
+function removeIframeInTab(src) {
+  const iframes = Array.from(document.querySelectorAll('iframe'));
+  const iframeToRemove = iframes.find((iframe) => iframe.src === src);
+
+  if (iframeToRemove) {
+    iframeToRemove.remove();
+    console.log('Iframe eliminado:', src);
+  } else {
+    console.warn('No se encontró el iframe:', src);
+  }
+}
 
 function copyToClipboard(text) {
   navigator.clipboard.writeText(text).then(() => {
