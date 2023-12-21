@@ -69,11 +69,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function analyzeIframes() {
   const iframes = Array.from(document.querySelectorAll('iframe')).map((iframe) => {
-    const attributes = {
-      src: iframe.src,
-    };
-
-    return attributes;
+    if (iframe.dataset.hasOwnProperty('src')) {
+        iframe.src =
+        const attributes = {
+            src: dataset.src,
+        };
+        return attributes;
+    }
   });
 
   return iframes;
