@@ -8,9 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }, (results) => {
       const iframeAttributes = results[0].result;
       const iframeListElement = document.getElementById('iframeList');
-
       iframeAttributes.forEach((attributes) => {
-        
         if(!attributes.src){return;}
         const row = document.createElement('tr');
 
@@ -27,41 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
         actionsCell.appendChild(copyButton);
         row.appendChild(actionsCell);
 
-        const removeButton = document.createElement('button');
-        removeButton.innerText = 'Delete';
-        removeButton.addEventListener('click', () => {
-          removeIframe(attributes.src);
-        });
-        actionsCell.appendChild(removeButton);
-
-        row.appendChild(actionsCell);
-
         iframeListElement.appendChild(row);
-      });
-    });
-  });
-
-  document.getElementById('exportButton').addEventListener('click', () => {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      const tab = tabs[0];
-      chrome.scripting.executeScript({
-        target: { tabId: tab.id },
-        function: exportIframesToCSV,
-      }, (results) => {
-        const csvData = results[0].result;
-        downloadCSV(csvData);
-      });
-    });
-  });
-  //for delete all
-  document.getElementById('deleteAllButton').addEventListener('click', () => {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      const tab = tabs[0];
-      chrome.scripting.executeScript({
-        target: { tabId: tab.id },
-        function: removeAllIframeInTab,
-      }, (results) => {
-        
       });
     });
   });
@@ -69,24 +33,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function analyzeIframes() {
   const iframes = Array.from(document.querySelectorAll('iframe')).map((iframe) => {
-    console.log(iframe);
+    const attributes = {
+        src: null,
+    };
     if (iframe.dataset.hasOwnProperty('src')) {
-        console.log(iframe.dataset.src);
-        const attributes = {
-            src: iframe.dataset.src,
-        };
-        return attributes;
+        //console.log(iframe.dataset.src);
+        attributes.src=iframe.dataset.src,
+        console.log(attributes);
     }
+    return attributes;
   });
 
   return iframes;
 }
 
-function exportIframesToCSV() {
-  const iframes = Array.from(document.querySelectorAll('iframe')).map((iframe) => iframe.src);
-  const csvData = 'data:text/csv;charset=utf-8,' + encodeURIComponent(iframes.join('\n'));
-  return csvData;
-}
+
 
 function removeIframe(src) {
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -127,11 +88,4 @@ function removeAllIframeInTab() {
       iframeToRemove.remove();
     }
   });
-}
-
-function downloadCSV(csvData) {
-  const link = document.createElement('a');
-  link.setAttribute('href', csvData);
-  link.setAttribute('download', 'iframes.csv');
-  link.click();
 }
