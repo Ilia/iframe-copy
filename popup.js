@@ -37,9 +37,7 @@ function analyzeIframes() {
         src: null,
     };
     if (iframe.dataset.hasOwnProperty('src')) {
-        //console.log(iframe.dataset.src);
-        attributes.src=iframe.dataset.src,
-        console.log(attributes);
+        attributes.src=iframe.dataset.src;
     }
     return attributes;
   });
